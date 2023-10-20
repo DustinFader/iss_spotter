@@ -27,22 +27,25 @@ const fetchMyIP = function(callback) {
 };
 
 const fetchCoordsByIP = function(ip, callback) {
-  request("https://ipwho.is/" + ip + "?fields=latitude,longitude", function(error, responce, body) {
+  request("https://ipwho.is/" + ip + "?fields=latitude,longitude,success,message", function(error, responce, body) {
     if (error) {
       callback(error, null);
       return;
     }
     
-    if (body.length === 2) {
-      const msg = 'Invalid ip address';
-      callback(msg, null);
+    const parsedBody = JSON.parse(body);
+    // check if "success" is true or not
+    if (!parsedBody.success) {
+      const message = `Success status was ${parsedBody.success}. Server message says: ${parsedBody.message} when fetching for IP ${ip}`;
+      callback(message, null);
       return;
     }
+
     
     const coordanates = JSON.parse(body);
     callback(null, coordanates);
   });
-}
+};
 
 
 module.exports = { fetchMyIP, fetchCoordsByIP };
