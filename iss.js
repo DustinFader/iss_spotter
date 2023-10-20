@@ -41,9 +41,8 @@ const fetchCoordsByIP = function(ip, callback) {
       return;
     }
 
-    
-    const coordanates = JSON.parse(body);
-    callback(null, coordanates);
+    const {latitude, longitude} = parsedBody;
+    callback(null, {latitude, longitude});
   });
 };
 
