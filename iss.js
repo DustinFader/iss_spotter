@@ -7,7 +7,7 @@ const request = require('request');
  *   - An error, if any (nullable)
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
-const url = 'https://api.ipify.org?format=json';
+const url = 'https://api.ipfy.org?format=json';
 const fetchMyIP = function (callback) {
   request(url, function (error, responce, body) {
     if (error) {
@@ -85,22 +85,21 @@ const fetchISSFlyOverTimes = function (coords, callback) {
   });
 };
 
-const errorCheck = (error) => {
-  if (error) {
-    console.log("It didnt work!", error);
-    return;
-  }
-}
-
 const nextISSTimesForMyLocation = function (callback) {
   fetchMyIP((error, ip) => {
-    errorCheck(error);
+    if (error) {
+      return callback(error, null)
+    }
 
     fetchCoordsByIP(ip, (error, coordinates) => {
-      errorCheck(error);
+      if (error) {
+        return callback(error, null)
+      }
 
       fetchISSFlyOverTimes(coordinates, (error, riseTimes) => {
-        errorCheck(error);
+        if (error) {
+          return callback(error, null)
+        }
 
         callback(null, riseTimes);
         // console.log('It worked! Returned rise times:', riseTimes);
