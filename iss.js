@@ -26,7 +26,26 @@ const fetchMyIP = function(callback) {
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = function(ip, callback) {
+  request("https://ipwho.is/" + ip + "?fields=latitude,longitude", function(error, responce, body) {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+    
+    if (body.length === 2) {
+      const msg = 'Invalid ip address';
+      callback(msg, null);
+      return;
+    }
+    
+    const coordanates = JSON.parse(body);
+    callback(null, coordanates);
+  });
+}
+
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
 
 // curl 'https://api.ipify.org?format=json'
 // {"ip":"174.113.38.35"}
